@@ -15,12 +15,14 @@ was used to enable line tracking when pressed. Releasing the LT button resumed g
 The RT (Right-Trigger) button was used to enable openCV ball tracking code.
 
 ## TODO
+- Create a status and control web page that shows what the camera sees, highlighting the ball tracking centroid when in ball tracking mode, line tracking sensor status, battery status and historical graph.
+
 - Enhance line tracking code to search for a line and to handle the case of no sensors triggered or all three
 sensors triggered.
 
 - Add PID control algorithm to replace open-loop control.
 
-
+- Add the IMU to the I2C bus and track the robot's navigational data.
 
 
 
