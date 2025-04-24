@@ -30,24 +30,24 @@ def polarScan(num_points=54):
 
     # Create the column of distances (scan data contains tuples of (quality, angle, distance))
     scan_points = np.array([data[2] for data in scan_data])  # Extract the distance values
-    inc_ang = angle_res  # Calculate angle increment for scan_points resized to num_points
-
-    # Reshape to only take num_points
-    scan_points = np.array(np.array_split(scan_points, num_points))   # Split array into sections
-    scan_points = [item[0] for item in scan_points]                     # Take the first element of each section
-    scan_points = np.asarray(scan_points)                               # Cast the list into an array
-    scan_points = np.reshape(scan_points, (scan_points.shape[0], 1))    # Turn scan_points row into column
+    
+    # Reshape scan_points to match num_points and handle in a way that avoids irregular shapes
+    if dist_amnt < num_points:
+        # If scan data contains fewer points than requested, repeat the data to match the required points
+        scan_points = np.tile(scan_points, int(np.ceil(num_points / dist_amnt)))[:num_points]
+    else:
+        # If scan data contains more points, take evenly spaced samples
+        indices = np.linspace(0, dist_amnt - 1, num_points, dtype=int)
+        scan_points = scan_points[indices]
 
     # Create the column of angles
-    angles = np.zeros(num_points)
-    for i in range(len(angles)):
-        angles[i] = (i * angle_res) + start_angle  # Assign angle for each point
-
-    angles = np.reshape(angles, (angles.shape[0], 1))  # Turn angles row into column
-
+    angles = np.linspace(start_angle, start_angle + 360, num_points, endpoint=False)
+    
     # Create the polar coordinates of scan
-    scan_points = np.hstack((scan_points, angles))  # Turn two (54,) arrays into a single (54,2) matrix
-    scan_points = np.round(scan_points, 3)  # Round each element in array to 3 decimal places
+    scan_points = np.column_stack((scan_points, angles))  # Combine distances and angles
+
+    # Round each element in array to 3 decimal places
+    scan_points = np.round(scan_points, 3)
 
     return scan_points
 
@@ -83,9 +83,9 @@ if __name__ == "__main__":
     # Continuously get LIDAR data and plot
     while True:
         lidarData = polarScan(54)  # Collect LIDAR data
-        print(lidarData)  # Optionally print data for debugging
+#        print(lidarData)  # Optionally print data for debugging
         plot_lidar_data(lidarData)  # Plot the LIDAR data
         time.sleep(1)  # Wait for 1 second before next scan
 
-    plt.show()  # Ensure the plot stays open after the loop ends
+#    plt.show()  # Ensure the plot stays open after the loop ends
 
