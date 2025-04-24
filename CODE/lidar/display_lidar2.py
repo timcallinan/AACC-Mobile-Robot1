@@ -29,7 +29,7 @@ def plot_lidar_data():
                     angles.append(math.radians(angle))  # Convert degrees to radians
                     distances.append(distance)
 
-            print("Plotting data")
+#            print("Plotting data")
             # Plotting the data
             plt.clf()  # Clear the plot for each new frame
             ax = plt.subplot(projection='polar')
